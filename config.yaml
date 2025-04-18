@@ -1,0 +1,36 @@
+hblink:
+  enabled: true
+  master_ip: "192.168.1.100"      # IP deines HBLink-Masters
+  master_port: 62000              # Port des Masters (normalerweise UDP 62000 oder 54000)
+  peer_callsign: "OE0BOT"         # Rufzeichen des Bots
+  sys_id: "DMR"                   # System-ID aus bridge.yaml
+  password: "passw0rd"            # falls Authentifizierung nötig
+  talkgroup_rx: 7                 # TG, auf der der Bot hört
+  timeslot_rx: 2
+  talkgroup_tx: 7                 # TG, auf der er antwortet (optional)
+  timeslot_tx: 2
+
+bot:
+  callsign: "OE0BOT"
+  gpt_model: "gpt-4"
+  language: "de"
+
+paths:
+  input_audio: "input.wav"
+  output_audio_wav: "response.wav"
+  output_audio_ambe: "response.amb"
+  piper_model: "piper_models/de-thorsten.onnx"
+  uart_device: "/tmp/ttyMMDVM1"
+
+openai:
+  api_key: "DEIN_OPENAI_API_KEY"
+
+mmdvm:
+  use_playback: false
+  use_ambe_output: true
+  ambe_encoder_path: "./md380-emu/build/md380-emu"
+
+funk:
+  trigger_regex: "(?i)(cq|an\s+oe0bot|oe0bot\s+von|an\s+bot|dmr\s+bot)"
+  response_prefix: "Hier ist OE0BOT."
+  end_silence_threshold: 0.7
