@@ -1,18 +1,18 @@
-rufzeichen: "OE0BOT"
-dmr_id: "1234567"  # Hier deine DMR-ID eintragen
-hb_server_ip: "127.0.0.1"
+rufzeichen: „OE0BOT“
+dmr_id: 123456
+hb_server_ip: „127.0.0.1“
 hb_server_port: 62031
-master_password: "changeme"
-talkgroup_rx: 7
-talkgroup_tx: 7
+master_password: „changeme“
+talkgroup_rx: 9
+talkgroup_tx: 9
 timeslot_rx: 2
 timeslot_tx: 2
-language: "de"
-tts_engine: "espeak"  # oder "piper"
+language: „de“
+tts_engine: „espeak“ # oder „piper“
 phonetic_callsign: true
-announce_on_first_contact: true
-operator_name: "Sebastian"
-qth_city: "Graz"
-qth_country: "Austria"
-locator: "JN76pp"
-rig_model: "TYT MD-UV390"
+operator_name: „Sebastian“
+qth_city: „Graz“
+qth_country: „Austria“
+locator: „JN76pp“
+rig_model: „TYT MD-UV390“
+openai_api_key: „your_openai_api_key_here“
