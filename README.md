@@ -1,5 +1,3 @@
-# Inhalt der README-Datei erstellen
-readme_content = """
 # DMR AI Voicebot (OE0BOT)
 
 Ein intelligenter DMR-Voicebot, der mit einem HBLink-Master verbunden ist. Der Bot kann auf spezifische Trigger (z.B. "OE0BOT") reagieren und eine Antwort in Form von Text oder Sprache zurückgeben.
