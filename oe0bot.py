@@ -1,81 +1,44 @@
+# oe0bot.py – Hauptprogramm des DMR Voicebots ohne AMBE
 import yaml
-import requests
 import time
-import pyaudio
-import speech_recognition as sr
-from espeakng import ESpeakNG
 
-# Konfiguration laden
-with open('config.yaml', 'r') as file:
-    config = yaml.load(file, Loader=yaml.FullLoader)
+def buchstabiere_rufzeichen(callsign):
+    nato = {
+        "A": "Alfa", "B": "Bravo", "C": "Charlie", "D": "Delta", "E": "Echo", "F": "Foxtrot",
+        "G": "Golf", "H": "Hotel", "I": "India", "J": "Juliett", "K": "Kilo", "L": "Lima",
+        "M": "Mike", "N": "November", "O": "Oscar", "P": "Papa", "Q": "Quebec", "R": "Romeo",
+        "S": "Sierra", "T": "Tango", "U": "Uniform", "V": "Victor", "W": "Whiskey", "X": "X-ray",
+        "Y": "Yankee", "Z": "Zulu", "0": "Zero", "1": "One", "2": "Two", "3": "Three",
+        "4": "Four", "5": "Five", "6": "Six", "7": "Seven", "8": "Eight", "9": "Nine"
+    }
+    return " ".join([nato.get(c.upper(), c) for c in callsign])
 
-# TTS-Setup
-tts = ESpeakNG()
-tts.voice = 'de'  # Sprache auf Deutsch setzen
-tts.speed = 150   # Geschwindigkeit anpassen
+def lade_konfiguration():
+    with open("config.yaml", "r") as f:
+        return yaml.safe_load(f)
 
-# Funktionen für TTS
-def speak(text):
-    tts.say(text)
+def generiere_antwort(config, anrufer):
+    antwort = f"Hier ist {config['rufzeichen']}, ein KI-basierter Experimentalfunk-Bot des ÖVSV."
+    if config.get("announce_on_first_contact", True):
+        antwort += f" Dieses Projekt dient der Erforschung digitaler Sprachverarbeitung im Amateurfunk."
+    antwort += f" Vielen Dank für deinen Anruf, {anrufer}. Rapport ist fünf neun."
+    antwort += f" Mein Operator-Name ist {config['operator_name']}, Standort ist {config['qth_city']}, {config['qth_country']}, Locator {config['locator']}."
+    antwort += f" Mein Funkgerät ist ein {config['rig_model']}."
+    if config.get("phonetic_callsign", False):
+        antwort += f" Dein Rufzeichen buchstabiert: {buchstabiere_rufzeichen(anrufer)}."
+    antwort += " Mikrofon zurück."
+    return antwort
 
-# Funktionen für STT
-def listen():
-    recognizer = sr.Recognizer()
-    microphone = sr.Microphone()
-    
-    with microphone as source:
-        print("Höre auf einen Befehl...")
-        recognizer.adjust_for_ambient_noise(source)
-        audio = recognizer.listen(source)
-        
-    try:
-        print("Erkenne Sprache...")
-        command = recognizer.recognize_google(audio, language='de-DE')
-        print(f"Verstanden: {command}")
-        return command
-    except sr.UnknownValueError:
-        print("Konnte die Sprache nicht verstehen.")
-        return None
-    except sr.RequestError:
-        print("Fehler bei der Anfrage an die STT-API.")
-        return None
-
-# Verbindung zu HBLink
-def connect_to_hblink():
-    url = f"http://{config['hb_server_ip']}:{config['hb_server_port']}/api/"
-    headers = {'Authorization': f"Bearer {config['master_password']}"}
-    
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        print("Erfolgreich mit HBLink verbunden.")
-    else:
-        print("Verbindung zu HBLink fehlgeschlagen.")
-        time.sleep(5)  # Versuchen, alle 5 Sekunden erneut zu verbinden
-
-# Empfang und Senden von Nachrichten
-def handle_message(message):
-    # Hier kannst du den Empfang von DMR-Nachrichten implementieren und die Ausgabe an den Bot weiterleiten
-    print(f"Nachricht empfangen: {message}")
-    speak(f"Nachricht erhalten: {message}")
-
-# Hauptlogik
 def main():
+    config = lade_konfiguration()
+    print("[DMR] Voicebot gestartet. Warte auf CQ...")
+
     while True:
-        # Verbindung zum HBLink-Server herstellen
-        connect_to_hblink()
-
-        # Warten auf eine Nachricht oder einen Befehl
-        command = listen()
-
-        if command:
-            if "beenden" in command:
-                speak("Bot wird beendet.")
-                break
-            elif "Rapport" in command:
-                speak(f"Rapport fünf neun.")
-            else:
-                # Senden von Nachrichten (Beispiel)
-                handle_message(command)
+        anrufer = "OE1KBC"
+        print(f"[DMR] Anruf empfangen von {anrufer}")
+        antwort = generiere_antwort(config, anrufer)
+        print(f"[BOT] Antwort: {antwort}")
+        time.sleep(10)
 
 if __name__ == "__main__":
     main()
