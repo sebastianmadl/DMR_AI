@@ -1,35 +1,32 @@
-#!/bin/bash
-# Installation script for DMR AI Voicebot
+#!/usr/bin/env bash
+# install.sh – Installiert Abhängigkeiten für OE0BOT Voicebot
 
-echo "Updating system..."
-sudo apt update && sudo apt upgrade -y
+set -e
 
-echo "Installing dependencies..."
-sudo apt install -y python3 python3-pip espeak ffmpeg git
+echo "[INFO] Installiere Systemabhängigkeiten..."
+sudo apt update
+sudo apt install -y python3 python3-pip espeak-ng ffmpeg libespeak-ng1 portaudio19-dev sox git
 
-echo "Installing Python packages..."
-pip3 install vosk pyyaml sounddevice numpy
+if [[ "$1" == "--piper" ]]; then
+    echo "[INFO] Installiere Piper (TTS)..."
+    pip install piper-tts
+else
+    echo "[INFO] Verwende Espeak NG als TTS"
+fi
 
-echo "Creating config.yaml..."
-cat <<EOF > config.yaml
-rufzeichen: "OE0BOT"
-dmr_id: "2320999"
-hb_server_ip: "127.0.0.1"
-hb_server_port: 62031
-master_password: "changeme"
-talkgroup_rx: 7
-talkgroup_tx: 7
-timeslot_rx: 2
-timeslot_tx: 2
-language: "de"
-tts_engine: "espeak"
-phonetic_callsign: true
-operator_name: "Sebastian"
-qth_city: "Graz"
-qth_country: "Austria"
-locator: "JN76pp"
-rig_model: "TYT MD-UV390"
-developer: "Sebastian MADL, ÖVSV Mitglied"
-EOF
+echo "[INFO] Installiere Python-Abhängigkeiten..."
+pip install vosk PyYAML pyaudio
 
-echo "Done. Run 'python3 oe0bot.py' to start the bot."
+# Vosk Sprachmodell (Deutsch, ca. 50 MB)
+echo "[INFO] Lade Vosk Sprachmodell (Deutsch)..."
+mkdir -p model
+cd model
+if [ ! -d "vosk-model-small-de-0.15" ]; then
+    wget https://alphacephei.com/vosk/models/vosk-model-small-de-0.15.zip
+    unzip vosk-model-small-de-0.15.zip
+    rm vosk-model-small-de-0.15.zip
+fi
+cd ..
+
+echo "[INFO] Installation abgeschlossen. Starte den Bot mit:"
+echo "    python3 oe0bot.py"
