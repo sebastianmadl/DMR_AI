@@ -1,32 +1,54 @@
-# DMR AI Voicebot (OE0BOT)
+# README.md – OE0BOT DMR Voicebot (ÖVSV-konform)
 
-Ein intelligenter DMR-Voicebot, der mit einem HBLink-Master verbunden ist. Der Bot kann auf spezifische Trigger (z.B. "OE0BOT") reagieren und eine Antwort in Form von Text oder Sprache zurückgeben.
+## 📡 Beschreibung
+OE0BOT ist ein experimenteller KI-Sprachbot für den digitalen Amateurfunkbetrieb über DMR. Er nutzt lokale Spracherkennung (Vosk) und Sprachsynthese (Espeak NG oder Piper), um auf Anrufe auf dem DMR-Netz zu reagieren – ganz ohne AMBE-Hardware oder md380-emu.
 
-## Features
+## ⚙ Funktionen
+- 📞 **Spracheingabe (STT):** Vosk (offline)
+- 🔊 **Sprachausgabe (TTS):** Espeak NG (Standard) oder Piper (optional)
+- 🔗 **DMR-Anbindung:** Verbindung zu HBLink Master oder IPSC2
+- 📜 **Rufzeichen-Erkennung & Antwort** mit Rapport, Name, QTH, Locator & Funkgerät
+- 🔡 **Buchstabiert empfangene Rufzeichen** im NATO-Alphabet (optional)
+- 🛡 **Amateurfunk-Richtlinien-konform** (ÖVSV / ITU)
 
-- Direkte Verbindung zum HBLink-Master
-- Sprachverarbeitung mit OpenAI GPT-4
-- Text-to-Speech (TTS) für Antworten
-- Sprach-Erkennung (Speech-to-Text)
-- AMBE-Audio-Encoding für die DMR-Kommunikation
-- Unterstützt UDP-Audio-Streaming
+## 📝 Beispiel-Antwort
+> Hier ist OE0BOT, ein KI-basierter Experimentalfunk-Bot des ÖVSV. Vielen Dank für deinen Anruf, OE1KBC. Rapport ist fünf neun. Mein Operator-Name ist Sebastian, Standort ist Graz, Austria, Locator JN76pp. Mein Funkgerät ist ein TYT MD-UV390. Mikrofon zurück.
 
-## Vorraussetzungen
+## 🛠 Installation
+```bash
+git clone https://github.com/dein-benutzername/oe0bot.git
+cd oe0bot
+chmod +x install.sh
+./install.sh  # oder ./install.sh --piper für bessere TTS-Stimme
+```
 
-Bevor du den Bot einrichtest, stelle sicher, dass du die folgenden Software-Pakete und Tools installiert hast:
+## 🚀 Start
+```bash
+python3 oe0bot.py
+```
 
-- Python 3.x
-- pip (Python Package Manager)
-- Git
-- Build-Tools (für das Kompilieren von Abhängigkeiten)
-- [MMDVM](https://github.com/mbj46/md380-emu) für AMBE-Encoding
+## 🧾 Konfiguration (`config.yaml`)
+```yaml
+rufzeichen: "OE0BOT"
+hb_server_ip: "127.0.0.1"
+hb_server_port: 62031
+master_password: "changeme"
+talkgroup_rx: 7
+talkgroup_tx: 7
+timeslot_rx: 2
+timeslot_tx: 2
+language: "de"
+tts_engine: "espeak"  # oder "piper"
+phonetic_callsign: true
+announce_on_first_contact: true
+operator_name: "Sebastian"
+qth_city: "Graz"
+qth_country: "Austria"
+locator: "JN76pp"
+rig_model: "TYT MD-UV390"
+```
 
-## Installation
+## 👤 Entwickler
+Sebastian MADL, Mitglied des ÖVSV
 
-1. **Clone das Repository**
-
-   Wenn du das Repository von GitHub heruntergeladen hast, entpacke die ZIP-Datei oder klone das Repository:
-
-   ```bash
-   git clone https://github.com/yourusername/DMR_AI_Voicebot.git
-   cd DMR_AI_Voicebot
+Dieses Projekt dient der Erforschung digitaler Sprachverarbeitung im Amateurfunkdienst.
