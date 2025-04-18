@@ -1,32 +1,35 @@
 #!/bin/bash
+# Installation script for DMR AI Voicebot
 
-# System vorbereiten
-echo "Installiere notwendige Pakete..."
-sudo apt-get update
-sudo apt-get install -y python3 python3-pip python3-venv build-essential git libsndfile1
+echo "Updating system..."
+sudo apt update && sudo apt upgrade -y
 
-# Virtuelle Umgebung erstellen
-python3 -m venv venv
-source venv/bin/activate
+echo "Installing dependencies..."
+sudo apt install -y python3 python3-pip espeak ffmpeg git
 
-# Abhängigkeiten installieren
-pip install -r requirements.txt
+echo "Installing Python packages..."
+pip3 install vosk pyyaml sounddevice numpy
 
-# Piper-Modell und AMBE Encoder herunterladen
-mkdir -p piper_models
-cd piper_models
-wget https://huggingface.co/espnet/kan-bayashi_ljspeech_tts_train_tacotron2_raw_phn_tacotron2/1?download -O de-thorsten.onnx
+echo "Creating config.yaml..."
+cat <<EOF > config.yaml
+rufzeichen: "OE0BOT"
+dmr_id: "2320999"
+hb_server_ip: "127.0.0.1"
+hb_server_port: 62031
+master_password: "changeme"
+talkgroup_rx: 7
+talkgroup_tx: 7
+timeslot_rx: 2
+timeslot_tx: 2
+language: "de"
+tts_engine: "espeak"
+phonetic_callsign: true
+operator_name: "Sebastian"
+qth_city: "Graz"
+qth_country: "Austria"
+locator: "JN76pp"
+rig_model: "TYT MD-UV390"
+developer: "Sebastian MADL, ÖVSV Mitglied"
+EOF
 
-cd ..
-git clone https://github.com/mbj46/md380-emu.git
-cd md380-emu
-make
-
-# Konfiguration prüfen
-echo "Prüfe config.yaml..."
-if [ ! -f config.yaml ]; then
-    echo "Fehler: config.yaml nicht gefunden!"
-    exit 1
-fi
-
-echo "Installation abgeschlossen!"
+echo "Done. Run 'python3 oe0bot.py' to start the bot."
